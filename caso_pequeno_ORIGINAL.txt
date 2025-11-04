@@ -8,7 +8,7 @@ DEPOSITO_ID 0
 // --- NODOS (ID X Y) ---
 0 173 987 // Deposito
 1 662 951 // Hub
-2 114 626 // Entrega
+2 114 626 // Hub
 3 100 759 // Hub
 4 363 358 // Entrega
 5 332 402 // Entrega
@@ -22,15 +22,15 @@ DEPOSITO_ID 0
 13 812 159 // Entrega
 14 516 395 // Entrega
 15 780 689 // Entrega
-16 382 132 // Hub
+16 382 132 // Entrega
 17 329 186 // Entrega
 18 758 119 // Entrega
 19 945 121 // Entrega
 
 // --- HUBS (ID COSTO_ACTIVACION) ---
 1 164.00
-16 470.00
-11 188.00
+2 470.00
+3 188.00
 
 // --- PAQUETES (ID NODO_ORIGEN NODO_DESTINO) ---
 0 0 15

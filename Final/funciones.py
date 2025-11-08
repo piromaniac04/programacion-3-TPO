@@ -95,22 +95,6 @@ def floydWarshallConCaminos(matrizDeAdyacencia: List[List[float]]) -> Tuple[List
                 caminos[i][j] = reconstruir_camino(next_node, i, j)
     return distancia, caminos
 
-def recogerPaquete(capacidadActual: int, cantidadDeposito: int, capacidadMaxima: int) -> Tuple[int, int]:
-    """Devuelve nueva capacidad del camión y paquetes restantes en depósito.
-    Parametros:
-    - capacidadActual: capacidad actual del camión
-    - cantidadDeposito: cantidad de paquetes en el depósito
-    - capacidadMaxima: capacidad máxima del camión
-    Salida:
-    - tupla (nueva capacidad del camión, paquetes restantes en depósito)
-    """
-    espacioDisponible = capacidadMaxima - capacidadActual
-    if espacioDisponible <= 0:
-        return capacidadActual, cantidadDeposito
-    if cantidadDeposito >= espacioDisponible:
-        return capacidadMaxima, cantidadDeposito - espacioDisponible
-    return capacidadActual + cantidadDeposito, 0
-
 
 #  Heurísticas
 def auto_meseta(n: int, m: int, T: int, base: int) -> int:

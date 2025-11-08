@@ -192,7 +192,7 @@ def primer_solucion_greedy(matriz_distancias: List[List[float]],
     while restante > 0:
         if carga == 0:
             carga = min(capacidad_camion, restante)
-            mejor_nodo_r, mejor_distancia_r = None, float('inf')
+            mejor_nodo_r, mejor_distancia_u_r_v = None, float('inf')
             for r in nodos_recarga:
                 d_ur = matriz_distancias[u][r]
                 if d_ur == float('inf'):
@@ -204,8 +204,8 @@ def primer_solucion_greedy(matriz_distancias: List[List[float]],
                 if mejor_min_rv == float('inf'):
                     continue
                 distancia_u_r_v = d_ur + mejor_min_rv
-                if distancia_u_r_v < mejor_distancia_r:
-                    mejor_nodo_r, mejor_distancia_r = r, distancia_u_r_v
+                if distancia_u_r_v < mejor_distancia_u_r_v:
+                    mejor_nodo_r, mejor_distancia_u_r_v = r, distancia_u_r_v
             if mejor_nodo_r is None:
                 raise ValueError("No se encontró recarga válida; verificar conectividad del grafo.")
             if mejor_nodo_r != u:

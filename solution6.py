@@ -239,16 +239,20 @@ def imprimir_problema(p: Problema) -> None:
 
 
 def main():
+    
+    if len(sys.argv) != 2:
+        print(f"Uso: {sys.argv[0]} <nombre_del_archivo.txt>")
+        sys.exit(1)
+
+    nombre_archivo = sys.argv[1]
+    print(f"Leyendo el archivo de problema: {nombre_archivo}")
     tiempoInicial = time.time()
     print("Comienza el programa")
-    problema = leer_archivo("caso_medio.txt")
+    
+    problema = leer_archivo(nombre_archivo)
     if problema is None:
         sys.exit(1)
     # Floyd (distancias y caminos)
-    tiempoParcial = time.time()
-    print(
-        f"\nTiempo de ejecución: {tiempoParcial - tiempoInicial:.2f} segundos")
-
     floyd, caminos = f.floydWarshallConCaminos(problema.grafo_distancias)
     print("Se ha convertido el grafo de distancias con Floyd-Warshall.")
 
@@ -259,44 +263,48 @@ def main():
     for nodo in nodosEntrega:
         dicNodosCantidad[nodo] = dicNodosCantidad.get(nodo, 0) + 1
     print("Se ha construido el diccionario de demandas por nodo.")
-    mejor = f.resolver_problema(
-        matriz_distancias=floyd,
-        deposito_id=problema.deposito_id,
-        hubs=hubs,
-        demanda_por_nodo=dicNodosCantidad,
-        capacidad_camion=problema.capacidad_camion,
-        max_llamadas_sin_mejora=None,
-        debug=False,
-        base_meseta=1300
-    )
+    
+    try:
+        mejor = f.resolver_problema(
+            matriz_distancias=floyd,
+            deposito_id=problema.deposito_id,
+            hubs=hubs,
+            demanda_por_nodo=dicNodosCantidad,
+            capacidad_camion=problema.capacidad_camion,
+            max_llamadas_sin_mejora=None,
+            debug=False,
+            base_meseta=1300
+        )
 
-    ruta_expandida = []
-    for a, b in zip(mejor.ruta, mejor.ruta[1:]):
-        tramo = caminos[a][b]
-        if not tramo:
-            tramo = [a, b] 
-        if ruta_expandida:
-            ruta_expandida.extend(tramo[1:])  # evitar repetir el nodo de unión (la posición inicial se repetiría)
-        else:
-            ruta_expandida.extend(tramo)
-            
-    # Generacion de hubs usados en base a ruta expandida
-            
-    print("// --- HUBS ACTIVADOS ---")
-    for h in sorted(mejor.hubs_usados):
-        print(f"{h} ID_HUB_{h}")
+        ruta_expandida = []
+        for a, b in zip(mejor.ruta, mejor.ruta[1:]):
+            tramo = caminos[a][b]
+            if not tramo:
+                tramo = [a, b] 
+            if ruta_expandida:
+                ruta_expandida.extend(tramo[1:])  # evitar repetir el nodo de unión (la posición inicial se repetiría)
+            else:
+                ruta_expandida.extend(tramo)
 
-    print("// --- RUTA OPTIMA ---")
-    print(" -> ".join(map(str, ruta_expandida)))
+        # Generacion de hubs usados en base a ruta expandida
 
-    print("// --- METRICAS ---")
-    print(f"COSTO_TOTAL : {mejor.distancia:.2f}")
-    print(f"DISTANCIA_RECORRIDA : {mejor.distancia:.2f}")
-    print("COSTO_HUBS : 0.00")
+        print("// --- HUBS ACTIVADOS ---")
+        for h in sorted(mejor.hubs_usados):
+            print(f"{h} ID_HUB_{h}")
 
-    tiempoFinal = time.time()
-    print(f"\nTiempo de ejecución: {tiempoFinal - tiempoInicial:.2f} segundos")
+        print("// --- RUTA OPTIMA ---")
+        print(" -> ".join(map(str, ruta_expandida)))
 
+        print("// --- METRICAS ---")
+        print(f"COSTO_TOTAL : {mejor.distancia:.2f}")
+        print(f"DISTANCIA_RECORRIDA : {mejor.distancia:.2f}")
+        print("COSTO_HUBS : 0.00")
+
+        tiempoFinal = time.time()
+        print(f"Tiempo de ejecución: {tiempoFinal - tiempoInicial:.2f} segundos")
+    except ValueError as e:
+        print(f"Error al resolver el problema: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

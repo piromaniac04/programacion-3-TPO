@@ -2,10 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional
 from math import ceil, sqrt
 
-# ============================================================
 #  Modelos / Dataclasses
-# ============================================================
-
 @dataclass
 class Solucion:
     """Guarda la mejor solución encontrada"""
@@ -31,10 +28,7 @@ class EstadoBT:
     intervalo_report: int = 0
 
 
-# ============================================================
 #  Floyd–Warshall con reconstrucción de caminos
-# ============================================================
-
 def reconstruir_camino(next_node: List[List[Optional[int]]], origen: int, destino: int) -> List[int]:
     """Reconstruye el camino desde `origen` hasta `destino` usando la matriz `next_node`.
     Parametros:
@@ -198,7 +192,7 @@ def primer_solucion_greedy(matriz_distancias: List[List[float]],
     while restante > 0:
         if carga == 0:
             carga = min(capacidad_camion, restante)
-            mejor_r, mejor_score = None, float('inf')
+            mejor_nodo_r, mejor_distancia_r = None, float('inf')
             for r in nodos_recarga:
                 d_ur = matriz_distancias[u][r]
                 if d_ur == float('inf'):
@@ -209,15 +203,15 @@ def primer_solucion_greedy(matriz_distancias: List[List[float]],
                 )
                 if mejor_min_rv == float('inf'):
                     continue
-                score = d_ur + mejor_min_rv
-                if score < mejor_score:
-                    mejor_r, mejor_score = r, score
-            if mejor_r is None:
+                distancia_u_r_v = d_ur + mejor_min_rv
+                if distancia_u_r_v < mejor_distancia_r:
+                    mejor_nodo_r, mejor_distancia_r = r, distancia_u_r_v
+            if mejor_nodo_r is None:
                 raise ValueError("No se encontró recarga válida; verificar conectividad del grafo.")
-            if mejor_r != u:
-                dist += matriz_distancias[u][mejor_r]
-                ruta.append(mejor_r)
-                u = mejor_r
+            if mejor_nodo_r != u:
+                dist += matriz_distancias[u][mejor_nodo_r]
+                ruta.append(mejor_nodo_r)
+                u = mejor_nodo_r
                 if u != deposito_id:
                     hubs_usados.add(u)
 
@@ -296,6 +290,7 @@ def bt(u: int,
         estado.stop = True
         return
 
+    # Poda por distancia
     if dist >= estado.mejor.distancia:
         return
 
@@ -391,6 +386,9 @@ def resolver_problema(
     mejor = Solucion()
     ruta_inicial: List[int] = [deposito_id]
 
+    if base_meseta <= 0:
+        raise ValueError("base_meseta debe ser un entero positivo.")
+    
     m = sum(1 for _, cnt in demanda.items() if cnt > 0) or 1
     T = ceil(total_restante / max(1, capacidad_camion)) or 1
     if max_llamadas_sin_mejora is None:

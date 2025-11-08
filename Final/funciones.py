@@ -95,19 +95,6 @@ def floydWarshallConCaminos(matrizDeAdyacencia: List[List[float]]) -> Tuple[List
                 caminos[i][j] = reconstruir_camino(next_node, i, j)
     return distancia, caminos
 
-
-def hubEnCamino(camino: List[int], hubs: List[int]) -> bool:
-    """Devuelve True si en el camino hay al menos un hub.
-    Parametros:
-    - camino: lista de nodos del camino
-    - hubs: lista de nodos que son hubs
-    Salida:
-    - True si hay al menos un hub en el camino, False en caso contrario
-    """
-    set_h = set(hubs)
-    return any(n in set_h for n in camino)
-
-
 def recogerPaquete(capacidadActual: int, cantidadDeposito: int, capacidadMaxima: int) -> Tuple[int, int]:
     """Devuelve nueva capacidad del camión y paquetes restantes en depósito.
     Parametros:

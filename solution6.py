@@ -3,7 +3,7 @@
 import sys
 from dataclasses import dataclass
 from typing import List, Optional
-import funciones5 as f
+import funciones6 as f
 import time
 
 
@@ -241,7 +241,7 @@ def imprimir_problema(p: Problema) -> None:
 def main():
     tiempoInicial = time.time()
     print("Comienza el programa")
-    problema = leer_archivo("caso_pequeno.txt")
+    problema = leer_archivo("caso_medio.txt")
     if problema is None:
         sys.exit(1)
     # Floyd (distancias y caminos)
@@ -251,7 +251,7 @@ def main():
 
     floyd, caminos = f.floydWarshallConCaminos(problema.grafo_distancias)
     print("Se ha convertido el grafo de distancias con Floyd-Warshall.")
-    # Datos para Opción A
+
     hubs = [hub.id_nodo for hub in problema.hubs]
     nodosEntrega = [paquete.id_nodo_destino for paquete in problema.paquetes]
 
@@ -274,20 +274,16 @@ def main():
     for a, b in zip(mejor.ruta, mejor.ruta[1:]):
         tramo = caminos[a][b]
         if not tramo:
-            tramo = [a, b]  # fallback si no hubiera camino construido
+            tramo = [a, b] 
         if ruta_expandida:
-            ruta_expandida.extend(tramo[1:])  # evitar repetir el nodo de unión
+            ruta_expandida.extend(tramo[1:])  # evitar repetir el nodo de unión (la posición inicial se repetiría)
         else:
             ruta_expandida.extend(tramo)
             
     # Generacion de hubs usados en base a ruta expandida
-    hubs_usados = set()
-    for nodo in ruta_expandida:
-        if nodo in hubs:
-            hubs_usados.add(nodo)
             
     print("// --- HUBS ACTIVADOS ---")
-    for h in sorted(hubs_usados):
+    for h in sorted(mejor.hubs_usados):
         print(f"{h} ID_HUB_{h}")
 
     print("// --- RUTA OPTIMA ---")

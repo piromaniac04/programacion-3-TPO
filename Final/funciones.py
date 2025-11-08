@@ -3,12 +3,15 @@ from typing import List, Dict, Tuple, Optional
 from math import ceil, sqrt
 
 #  Modelos / Dataclasses
+
+
 @dataclass
 class Solucion:
     """Guarda la mejor solución encontrada"""
     distancia: float = float('inf')
     ruta: List[int] = None
-    hubs_usados: set = field(default_factory=set)  # conjunto de hubs realmente usados
+    # conjunto de hubs realmente usados
+    hubs_usados: set = field(default_factory=set)
 
     def set(self, dist: float, ruta: List[int], hubs_usados: Optional[set] = None) -> None:
         """Actualiza la mejor solución con nueva distancia, ruta y hubs usados."""
@@ -198,7 +201,8 @@ def primer_solucion_greedy(matriz_distancias: List[List[float]],
                 if d_ur == float('inf'):
                     continue
                 mejor_min_rv = min(
-                    (matriz_distancias[r][v] for v, cnt in dem.items() if cnt > 0 and matriz_distancias[r][v] != float('inf')),
+                    (matriz_distancias[r][v] for v, cnt in dem.items(
+                    ) if cnt > 0 and matriz_distancias[r][v] != float('inf')),
                     default=float('inf')
                 )
                 if mejor_min_rv == float('inf'):
@@ -207,7 +211,8 @@ def primer_solucion_greedy(matriz_distancias: List[List[float]],
                 if distancia_u_r_v < mejor_distancia_u_r_v:
                     mejor_nodo_r, mejor_distancia_u_r_v = r, distancia_u_r_v
             if mejor_nodo_r is None:
-                raise ValueError("No se encontró recarga válida; verificar conectividad del grafo.")
+                raise ValueError(
+                    "No se encontró recarga válida; verificar conectividad del grafo.")
             if mejor_nodo_r != u:
                 dist += matriz_distancias[u][mejor_nodo_r]
                 ruta.append(mejor_nodo_r)
@@ -215,7 +220,8 @@ def primer_solucion_greedy(matriz_distancias: List[List[float]],
                 if u != deposito_id:
                     hubs_usados.add(u)
 
-        candidatos = [v for v, cnt in dem.items() if cnt > 0 and matriz_distancias[u][v] != float('inf')]
+        candidatos = [v for v, cnt in dem.items() if cnt >
+                      0 and matriz_distancias[u][v] != float('inf')]
         if not candidatos:
             break
         candidatos.sort(key=lambda v: (matriz_distancias[u][v], -dem[v]))
@@ -295,7 +301,8 @@ def bt(u: int,
         return
 
     if restante == 0 and carga == 0:
-        dist_final, ruta_final = cerrar_ruta(dist, u, ruta, deposito_id, matriz_distancias)
+        dist_final, ruta_final = cerrar_ruta(
+            dist, u, ruta, deposito_id, matriz_distancias)
         if dist_final < estado.mejor.distancia:
             estado.mejor.set(dist_final, ruta_final, hubs_en_rama)
             estado.llamadas_desde_mejora = 0
@@ -331,7 +338,8 @@ def bt(u: int,
             ruta.pop()
         return
 
-    destinos = [v for v, cnt in demanda.items() if cnt > 0 and matriz_distancias[u][v] != float('inf')]
+    destinos = [v for v, cnt in demanda.items(
+    ) if cnt > 0 and matriz_distancias[u][v] != float('inf')]
     destinos.sort(key=lambda v: matriz_distancias[u][v])
 
     for destino in destinos:
@@ -388,7 +396,7 @@ def resolver_problema(
 
     if base_meseta <= 0:
         raise ValueError("base_meseta debe ser un entero positivo.")
-    
+
     m = sum(1 for _, cnt in demanda.items() if cnt > 0) or 1
     T = ceil(total_restante / max(1, capacidad_camion)) or 1
     if max_llamadas_sin_mejora is None:
@@ -399,7 +407,8 @@ def resolver_problema(
     puntoDePartida = primer_solucion_greedy(
         matriz_distancias, deposito_id, nodos_recarga, demanda, capacidad_camion)
     if puntoDePartida.distancia < mejor.distancia:
-        mejor.set(puntoDePartida.distancia, puntoDePartida.ruta, puntoDePartida.hubs_usados)
+        mejor.set(puntoDePartida.distancia, puntoDePartida.ruta,
+                  puntoDePartida.hubs_usados)
 
     estado = EstadoBT(
         mejor=mejor,

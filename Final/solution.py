@@ -239,7 +239,7 @@ def imprimir_problema(p: Problema) -> None:
 
 
 def main():
-    
+
     if len(sys.argv) != 2:
         print(f"Uso: {sys.argv[0]} <nombre_del_archivo.txt>")
         sys.exit(1)
@@ -248,7 +248,7 @@ def main():
     print(f"Leyendo el archivo de problema: {nombre_archivo}")
     tiempoInicial = time.time()
     print("Comienza el programa")
-    
+
     problema = leer_archivo(nombre_archivo)
     if problema is None:
         sys.exit(1)
@@ -263,7 +263,7 @@ def main():
     for nodo in nodosEntrega:
         dicNodosCantidad[nodo] = dicNodosCantidad.get(nodo, 0) + 1
     print("Se ha construido el diccionario de demandas por nodo.")
-    
+
     try:
         mejor = f.resolver_problema(
             matriz_distancias=floyd,
@@ -280,9 +280,10 @@ def main():
         for a, b in zip(mejor.ruta, mejor.ruta[1:]):
             tramo = caminos[a][b]
             if not tramo:
-                tramo = [a, b] 
+                tramo = [a, b]
             if ruta_expandida:
-                ruta_expandida.extend(tramo[1:])  # evitar repetir el nodo de unión (la posición inicial se repetiría)
+                # evitar repetir el nodo de unión (la posición inicial se repetiría)
+                ruta_expandida.extend(tramo[1:])
             else:
                 ruta_expandida.extend(tramo)
 
@@ -301,10 +302,12 @@ def main():
         print("COSTO_HUBS : 0.00")
 
         tiempoFinal = time.time()
-        print(f"Tiempo de ejecución: {tiempoFinal - tiempoInicial:.2f} segundos")
+        print(
+            f"Tiempo de ejecución: {tiempoFinal - tiempoInicial:.2f} segundos")
     except ValueError as e:
         print(f"Error al resolver el problema: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
